@@ -30,7 +30,7 @@
                     response.push({field: el[0], editor: ed, tags: ed.data('tags')});
                 else if (options == 'addTag') {
                     // insert new tag
-                    $('<li><div class="tag-editor-spacer">&nbsp;'+o.delimiter[0]+'</div><div class="tag-editor-tag"></div><div class="tag-editor-delete"><i></i></div></li>').appendTo(ed).find('.tag-editor-tag')
+                    $('<li><div class="tag-editor-spacer">&nbsp;'+o.delimiter[0]+'</div><div class="tag-editor-tag" style="background-color:'+o.backcolor+'"></div><div class="tag-editor-delete" style="background-color:'+o.backcolor+'"><i></i></div></li>').appendTo(ed).find('.tag-editor-tag')
                         .html('<input type="text" maxlength="'+o.maxLength+'">').addClass('active').find('input').val(val).blur();
                     if (!blur) ed.click();
                     else $('.placeholder', ed).remove();
@@ -75,7 +75,7 @@
             ed.append('<li style="width:1px">&nbsp;</li>');
 
             // markup for new tag
-            var new_tag = '<li><div class="tag-editor-spacer">&nbsp;'+o.delimiter[0]+'</div><div class="tag-editor-tag"></div><div class="tag-editor-delete"><i></i></div></li>';
+            var new_tag = '<li><div class="tag-editor-spacer">&nbsp;'+o.delimiter[0]+'</div><div class="tag-editor-tag" style="background-color:'+o.backcolor+'"></div><div class="tag-editor-delete" style="background-color:'+o.backcolor+'"><i></i></div></li>';
 
             // helper: update global data
             function set_placeholder(){
@@ -162,10 +162,12 @@
 
                 if (!$(this).hasClass('active')) {
                     var tag = $(this).html();
+                    //alert(tag);
                     // guess cursor position in text input
                     var left_percent = Math.abs(($(this).offset().left - e.pageX)/$(this).width()), caret_pos = parseInt(tag.length*left_percent),
                         input = $(this).html('<input type="text" maxlength="'+o.maxLength+'" value="'+tag+'">').addClass('active').find('input');
                         input.data('old_tag', tag).tagEditorInput().focus().caret(caret_pos);
+                        $(this).next().removeAttr('style');
                     if (o.autocomplete) {
                         var aco = $.extend({}, o.autocomplete);
                         // extend user provided autocomplete select method
@@ -190,7 +192,7 @@
                         if (~$.inArray(tag, old_tags))
                             $('.tag-editor-tag', ed).each(function(){ if ($(this).html() == tag) $(this).closest('li').remove(); });
                         old_tags.push(tag);
-                        li.before('<li><div class="tag-editor-spacer">&nbsp;'+o.delimiter[0]+'</div><div class="tag-editor-tag">'+tag+'</div><div class="tag-editor-delete"><i></i></div></li>');
+                        li.before('<li><div class="tag-editor-spacer">&nbsp;'+o.delimiter[0]+'</div><div class="tag-editor-tag" style="background-color:'+o.backcolor+'">'+tag+'</div><div class="tag-editor-delete" style="background-color:'+o.backcolor+'"><i></i></div></li>');
                     }
                 }
                 input.attr('maxlength', o.maxLength).removeData('old_tag').val('').focus();
@@ -216,7 +218,9 @@
                     // remove duplicates
                     $('.tag-editor-tag:not(.active)', ed).each(function(){ if ($(this).html() == tag) $(this).closest('li').remove(); });
                 }
+                input.parent().next().attr('style','background-color:'+o.backcolor);
                 input.parent().html(tag).removeClass('active');
+                //alert(input.parent().html());
                 if (tag != old_tag) update_globals();
                 set_placeholder();
             });
@@ -307,7 +311,7 @@
                 if (tag) {
                     if (o.forceLowercase) tag = tag.toLowerCase();
                     tag_list.push(tag);
-                    ed.append('<li><div class="tag-editor-spacer">&nbsp;'+o.delimiter[0]+'</div><div class="tag-editor-tag">'+tag+'</div><div class="tag-editor-delete"><i></i></div></li>');
+                    ed.append('<li><div class="tag-editor-spacer">&nbsp;'+o.delimiter[0]+'</div><div class="tag-editor-tag" style="background-color:'+o.backcolor+'">'+tag+'</div><div class="tag-editor-delete" style="background-color:'+o.backcolor+'"><i></i></div></li>');
                 }
             }
             update_globals(true); // true -> no onChange callback
